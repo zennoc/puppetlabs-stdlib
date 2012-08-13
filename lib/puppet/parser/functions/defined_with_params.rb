@@ -1,4 +1,6 @@
 # Test whether a given class or definition is defined
+require 'puppet/parser/functions'
+
 Puppet::Parser::Functions::newfunction(:defined_with_params, :type => :rvalue, :doc => "
 
   Takes a resource reference and an optional hash of attributes.

@@ -1,7 +1,7 @@
 # Test whether a given class or definition is defined
 Puppet::Parser::Functions::newfunction(:defined_with_params, :type => :rvalue, :doc => "
 
-  Takes a resource reference and an optional has of attributes.
+  Takes a resource reference and an optional hash of attributes.
 
   Returns true if a resource with the specified attributes has already been added to the
   catalog, and false otherwise.

@@ -1,7 +1,7 @@
 # Test whether a given class or definition is defined
 require 'puppet/parser/functions'
 
-Puppet::Parser::Functions::newfunction(:ensure_resource, :type => :statement, :doc => "
+Puppet::Parser::Functions.newfunction(:ensure_resource, :type => :statement, :doc => "
 
   Takes a resource type, title, and a list of attributes that describe a resource.
 

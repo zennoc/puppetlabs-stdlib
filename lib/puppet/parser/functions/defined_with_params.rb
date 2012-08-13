@@ -1,12 +1,13 @@
 # Test whether a given class or definition is defined
 require 'puppet/parser/functions'
 
-Puppet::Parser::Functions.newfunction(:defined_with_params, :type => :rvalue, :doc => "
+Puppet::Parser::Functions.newfunction(:defined_with_params,
+                                      :type => :rvalue,
+                                      :doc => <<-'ENDOFDOC'
+Takes a resource reference and an optional hash of attributes.
 
-  Takes a resource reference and an optional hash of attributes.
-
-  Returns true if a resource with the specified attributes has already been added to the
-  catalog, and false otherwise.
+Returns true if a resource with the specified attributes has already been added
+to the catalog, and false otherwise.
 
     user { 'dan':
       ensure => present,
@@ -15,8 +16,8 @@ Puppet::Parser::Functions.newfunction(:defined_with_params, :type => :rvalue, :d
     if ! defined_with_params(User[dan], {'ensure' => 'present' }) {
       user { 'dan': ensure => present, }
     }
-
-") do |vals|
+ENDOFDOC
+) do |vals|
   reference, params = vals
   raise(ArgumentError, 'Must specify a reference') unless reference
   params ||= {}

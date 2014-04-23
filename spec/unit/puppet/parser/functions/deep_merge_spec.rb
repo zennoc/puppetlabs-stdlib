@@ -30,7 +30,7 @@ describe Puppet::Parser::Functions.function(:deep_merge) do
     end
 
     it 'should accept empty strings as puppet undef' do
-      expect { new_hash = scope.function_deep_merge([{}, ''])}.not_to raise_error(Puppet::ParseError, /unexpected argument type String/)
+      expect { new_hash = scope.function_deep_merge([{}, ''])}.not_to raise_error
     end
 
     it 'should be able to deep_merge two hashes' do
@@ -72,6 +72,34 @@ describe Puppet::Parser::Functions.function(:deep_merge) do
       hash = scope.function_deep_merge([{ 'key1' => { 'a' => 1, 'b' => 2 }, 'key2' => { 'c' => 3 } }, { 'key1' => { 'b' => 99 } }])
       hash['key1'].should == { 'a' => 1, 'b' => 99 }
       hash['key2'].should == { 'c' => 3 }
+    end
+
+    it 'should not change the original hashes' do
+      hash1 = {'one' => { 'two' => 2 } }
+      hash2 = { 'one' => { 'three' => 3 } }
+      hash = scope.function_deep_merge([hash1, hash2])
+      hash1.should == {'one' => { 'two' => 2 } }
+      hash2.should == { 'one' => { 'three' => 3 } }
+      hash['one'].should == { 'two' => 2, 'three' => 3 }
+    end
+
+    it 'should not change the original hashes 2' do
+      hash1 = {'one' => { 'two' => [1,2] } }
+      hash2 = { 'one' => { 'three' => 3 } }
+      hash = scope.function_deep_merge([hash1, hash2])
+      hash1.should == {'one' => { 'two' => [1,2] } }
+      hash2.should == { 'one' => { 'three' => 3 } }
+      hash['one'].should == { 'two' => [1,2], 'three' => 3 }
+    end
+
+    it 'should not change the original hashes 3' do
+      hash1 = {'one' => { 'two' => [1,2, {'two' => 2} ] } }
+      hash2 = { 'one' => { 'three' => 3 } }
+      hash = scope.function_deep_merge([hash1, hash2])
+      hash1.should == {'one' => { 'two' => [1,2, {'two' => 2}] } }
+      hash2.should == { 'one' => { 'three' => 3 } }
+      hash['one'].should == { 'two' => [1,2, {'two' => 2} ], 'three' => 3 }
+      hash['one']['two'].should == [1,2, {'two' => 2}]
     end
   end
 end

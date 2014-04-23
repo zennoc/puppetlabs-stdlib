@@ -17,7 +17,7 @@ Puppet Labs writes and distributes will make heavy use of this standard
 library.
 
 To report or research a bug with any part of this module, please go to
-[http://projects.puppetlabs.com/projects/stdlib](http://projects.puppetlabs.com/projects/stdlib)
+[http://tickets.puppetlabs.com/browse/PUP](http://tickets.puppetlabs.com/browse/PUP)
 
 # Versions #
 
@@ -31,8 +31,9 @@ list of integration branches are:
  * v2.1.x (v2.1.1 released in PE 1)
  * v2.2.x (Never released as part of PE, only to the Forge)
  * v2.3.x (Released in PE 2)
- * v3.0.x (Never released as part of PE, only to the Forge)
- * v4.0.x (Drops support for Puppet 2.7)
+ * v3.0.x (Released in PE 3)
+ * v4.0.x (Maintains compatibility with v3.x despite the major semantic version bump.  Compatible with Puppet 2.7.x)
+ * v5.x (To be released when stdlib can drop support for Puppet 2.7.x.  Please see [this discussion](https://github.com/puppetlabs/puppetlabs-stdlib/pull/176#issuecomment-30251414))
  * master (mainline development branch)
 
 The first Puppet Enterprise version including the stdlib module is Puppet
@@ -44,7 +45,7 @@ Puppet Versions | < 2.6 | 2.6 | 2.7 | 3.x |
 :---------------|:-----:|:---:|:---:|:----:
 **stdlib 2.x**  | no    | **yes** | **yes** | no
 **stdlib 3.x**  | no    | no  | **yes** | **yes**
-**stdlib 4.x**  | no    | no  | no  | **yes**
+**stdlib 4.x**  | no    | no  | **yes** | **yes**
 
 The stdlib module does not work with Puppet versions released prior to Puppet
 2.6.0.
@@ -60,8 +61,10 @@ supports Puppet 2 and Puppet 3.
 
 ## stdlib 4.x ##
 
-The 4.0 major release of stdlib drops support for Puppet 2.7.  Stdlib 4.x
-supports Puppet 3.  Notably, ruby 1.8.5 is no longer supported though ruby
+The 4.0 major release of stdlib was intended to drop support for Puppet 2.7,
+but the impact on end users was too high.  The decision was made to treat
+stdlib 4.x as a continuation of stdlib 3.x support.  Stdlib 4.x supports Puppet
+2.7 and 3.  Notably, ruby 1.8.5 is no longer supported though ruby
 1.8.7, 1.9.3, and 2.0.0 are fully supported.
 
 # Functions #
@@ -222,7 +225,7 @@ delete_undef_values
 Deletes all instances of the undef value from an array or hash.
 
 *Examples:*
-    
+
     $hash = delete_undef_values({a=>'A', b=>'', c=>undef, d => false})
 
 Would return: {a => 'A', b => '', d => false}
@@ -301,6 +304,26 @@ the type and parameters specified if it doesn't already exist.
 
 
 - *Type*: statement
+
+file_line
+---------
+This resource ensures that a given line is contained within a file. You can also use 
+"match" to replace existing lines.
+
+*Examples:*
+
+    file_line { 'sudo_rule':
+      path => '/etc/sudoers',
+      line => '%sudo ALL=(ALL) ALL',
+    }
+
+    file_line { 'change_mount':
+      path  => '/etc/fstab',
+      line  => '10.0.0.1:/vol/data /opt/data nfs defaults 0 0',
+      match => '^172.16.17.2:/vol/old',
+    }
+
+- *Type*: resource
 
 flatten
 -------
@@ -486,6 +509,12 @@ Returns true if the variable passed to this function is an array.
 
 - *Type*: rvalue
 
+is_bool
+--------
+Returns true if the variable passed to this function is a boolean.
+
+- *Type*: rvalue
+
 is_domain_name
 --------------
 Returns true if the string passed to this function is a syntactically correct domain name.
@@ -621,8 +650,8 @@ Merges two or more hashes together and returns the resulting hash.
 
 For example:
 
-    $hash1 = {'one' => 1, 'two', => 2}
-    $hash2 = {'two' => 'dos', 'three', => 'tres'}
+    $hash1 = {'one' => 1, 'two' => 2}
+    $hash2 = {'two' => 'dos', 'three' => 'tres'}
     $merged_hash = merge($hash1, $hash2)
     # The resulting hash is equivalent to:
     # $merged_hash =  {'one' => 1, 'two' => 'dos', 'three' => 'tres'}
@@ -702,8 +731,8 @@ Will return: [0,1,2,3,4,5,6,7,8,9]
 
     range("00", "09")
 
-Will return: [0,1,2,3,4,5,6,7,8,9] (Zero padded strings are converted to
-integers automatically)
+Will return: [0,1,2,3,4,5,6,7,8,9] - Zero padded strings are converted to
+integers automatically
 
     range("a", "c")
 
@@ -822,8 +851,7 @@ To return the date:
     %L - Millisecond of the second (000..999)
     %m - Month of the year (01..12)
     %M - Minute of the hour (00..59)
-    %n - Newline (
-)
+    %n - Newline (\n)
     %N - Fractional seconds digits, default is 9 digits (nanosecond)
             %3N  millisecond (3 digits)
             %6N  microsecond (6 digits)
@@ -1171,13 +1199,13 @@ to a number.
 
 The following values will pass:
 
-  validate_slength("discombobulate",17)
-  validate_slength(["discombobulate","moo"],17)
+    validate_slength("discombobulate",17)
+    validate_slength(["discombobulate","moo"],17)
 
-The following valueis will not:
+The following values will not:
 
-  validate_slength("discombobulate",1)
-  validate_slength(["discombobulate","thermometer"],5)
+    validate_slength("discombobulate",1)
+    validate_slength(["discombobulate","thermometer"],5)
 
 
 

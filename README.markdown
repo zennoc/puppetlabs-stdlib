@@ -145,6 +145,11 @@ Would result in:
 
   ['1','2','3','4','5','6']
 
+  concat(['1','2','3'],'4')
+
+Would result in:
+
+  ['1','2','3','4']
 
 - *Type*: rvalue
 
@@ -275,6 +280,8 @@ Returns true if the variable is empty.
 ensure_packages
 ---------------
 Takes a list of packages and only installs them if they don't already exist.
+It optionally takes a hash as a second parameter that will be passed as the
+third argument to the ensure_resource() function.
 
 
 - *Type*: statement
